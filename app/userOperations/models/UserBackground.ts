@@ -14,20 +14,20 @@ const userBackgroundModel = new mongoose.Schema(
         EducationBackground:{
             type: String
         },
+        EducationBackgroundOther:{
+            type: String
+        },
         TechnicalBackground:{
             type: String
         },
         WorkExperience:{
-            type: Number
-        }, 
-        WorkExperienceUnit:{
             type: String
         }, 
         TeachingStyle:{
             type: String
         },
         LearningStyle:{
-            type: [String]
+            type: String
         },
         LearningMaterialTextPercent:{
             type: Number
@@ -39,6 +39,9 @@ const userBackgroundModel = new mongoose.Schema(
             type: Number
         },
         Interest:{
+            type:String
+        },
+        Remarks:{
             type:String
         }
     },
