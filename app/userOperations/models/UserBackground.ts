@@ -17,7 +17,7 @@ const userBackgroundModel = new mongoose.Schema(
         EducationBackgroundOther:{
             type: String
         },
-        TechnicalBackground:{
+        WorkIndustry:{
             type: String
         },
         WorkExperience:{
