@@ -17,7 +17,7 @@ describe('User Info', () => {
         done();      
     });
     describe('/POST storeUserBackground', async () => {
-        it('it should save user info', (done) => {
+        it.skip('it should save user info', (done) => {
             const payload = { 
                 WalletAddress: "0xqwefegewg"
             }

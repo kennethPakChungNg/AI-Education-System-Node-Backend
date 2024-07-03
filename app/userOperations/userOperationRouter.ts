@@ -50,7 +50,7 @@ router.post( '/storeUserBackground' , async(req: express.Request,res: express.Re
         logger.error( error.stack )
 		return jsonResponse(
 			res,
-			{ status: httpStatus.BAD_REQUEST, error: error.message }
+			{ status: httpStatus.INTERNAL_SERVER_ERROR, error: error.message }
 		)
     }
 });

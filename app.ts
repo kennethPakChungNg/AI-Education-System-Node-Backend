@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
 import userInfoRouter from './app/userOperations/userOperationRouter'
+import contenGenerateRouter from  './app/ContentGenerate/contentGenerateRouter'
 import mongoose from "mongoose"
 
 export default class Startup {
@@ -26,7 +27,7 @@ export default class Startup {
 
         // register controller routes
         this.app.use('/userInfo', userInfoRouter);
-
+        this.app.use('/aiGen', contenGenerateRouter);
 
         this.app.use(function(req, res, next) {
             next(createError(404));
