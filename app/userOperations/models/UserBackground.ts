@@ -11,38 +11,42 @@ const userBackgroundModel = new mongoose.Schema(
         WalletAddress:{
             type:String
         },
-        EducationBackground:{
-            type: String
+        name: { type: String },
+        educationLevel: { 
+            type: String 
         },
-        EducationBackgroundOther:{
-            type: String
+        educationBackground: { 
+            type: String 
         },
-        WorkIndustry:{
-            type: String
+        subject: { 
+            type: String 
+        }, // For university/college major
+        WorkIndustry: { 
+            type: String 
         },
-        WorkExperience:{
-            type: String
-        }, 
-        TeachingStyle:{
-            type: String
+        WorkExperience: { 
+            type: String 
         },
-        LearningStyle:{
-            type: String
+        TeachingStyle: { 
+            type: String 
         },
-        LearningMaterialTextPercent:{
-            type: Number
+        LearningStyle: { 
+            type: String 
         },
-        LearningMaterialImagePercent:{
-            type: Number
+        LearningMaterialTextPercent: { 
+            type: Number 
         },
-        LearningMaterialVideoPercent:{
-            type: Number
+        LearningMaterialImagePercent: { 
+            type: Number 
         },
-        Interest:{
-            type:String
+        LearningMaterialVideoPercent: { 
+            type: Number 
         },
-        Remarks:{
-            type:String
+        Interest: { 
+            type: String 
+        },
+        Remarks: { 
+            type: String 
         }
     },
     {

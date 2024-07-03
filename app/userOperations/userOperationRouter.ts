@@ -22,18 +22,23 @@ router.post( '/storeUserBackground' , async(req: express.Request,res: express.Re
 
 		//save user uid, email, request details to mongodb
 		const data = {
-            WalletAddress:input.WalletAddress,
-			EducationBackground: input.EducationBackground,
-			TechnicalBackground: input.TechnicalBackground,
-			WorkExperience: input.WorkExperience,
-			WorkExperienceUnit:  input.WorkExperienceUnit,
-			TeachingStyle:  input.TeachingStyle,
-            LearningStyle: input.LearningStyle,
-            LearningMaterialTextPercent: input.LearningMaterialTextPercent,
-            LearningMaterialImagePercent: input.LearningMaterialImagePercent,
-            LearningMaterialVideoPercent: input.LearningMaterialVideoPercent,
-            Interest: input.Interest
-		}
+			WalletAddress: input.WalletAddress,
+			name: input.name,
+			educationLevel: input.educationLevel,
+			educationBackground: input.educationBackground,
+			subject: input.subject, // For university/college major
+			WorkIndustry: input.workingIndustry,
+			WorkExperience: input.workingExperience,
+			TeachingStyle: input.teachingStyle,
+			LearningStyle: input.learningStyle,
+			LearningMaterialTextPercent: input.LearningMaterialTextPercent,
+			LearningMaterialImagePercent: input.LearningMaterialImagePercent,
+			LearningMaterialVideoPercent: input.LearningMaterialVideoPercent,
+			Interest: input.interests, // Note the plural form from the frontend
+			Remarks: input.remarks
+		};
+		
+		console.log('Processed data:', data);
 
         const returnResult = await saveUserBackground(data)
 

@@ -4,27 +4,30 @@ import { isNull } from 'util';
 
 const saveUserBackground = async (data) => {
 	try {
-		//insert or update
-		const searchByWallet = {
-			"WalletAddress": data.WalletAddress
-		};
-		const accountExist = await queryUserBackground( searchByWallet );
-
-		let returnFromDb = {};
-		if ( accountExist.length > 0){
-			//update
-			returnFromDb = await UserBackground.findOneAndUpdate(searchByWallet, data);
-		}else{
-			returnFromDb = await UserBackground.collection.insertOne(data);
-		}
-		
-
-		 
-        return data;
-	}catch (error) {
-		throw new error(`Error from saveUserBackground: ${error.stack}`)
+	  const searchByWallet = {
+		"WalletAddress": data.WalletAddress
+	  };
+	  const accountExist = await queryUserBackground(searchByWallet);
+  
+	  let returnFromDb;
+	  if (accountExist.length > 0) {
+		// Update existing document
+		returnFromDb = await UserBackground.findOneAndUpdate(
+		  searchByWallet,
+		  { $set: data },
+		  { new: true, omitUndefined: true }
+		);
+	  } else {
+		// Insert new document
+		returnFromDb = await UserBackground.create(data);
+	  }
+  
+	  return returnFromDb;
+	} catch (error) {
+	  console.error('Error in saveUserBackground:', error);
+	  throw error;
 	}
-};
+  };
 
 const queryUserBackground = async (filter) => {
 	try {
