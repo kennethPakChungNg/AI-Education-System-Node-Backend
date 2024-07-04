@@ -123,5 +123,7 @@ const getPrompt_courseOutline = ( userBackground: any ) =>{
 
 export {
     genCourseOutlineByOpenAI,
-    resolveCourseOutlineFromOpenAI
+    resolveCourseOutlineFromOpenAI,
+
+  
 }

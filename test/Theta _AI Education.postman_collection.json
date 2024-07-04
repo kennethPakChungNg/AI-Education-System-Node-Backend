@@ -1,0 +1,100 @@
+{
+	"info": {
+		"_postman_id": "59422bcb-a3d2-49de-ba52-21d0b0fda942",
+		"name": "Theta _AI Education",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "31649285"
+	},
+	"item": [
+		{
+			"name": "storeUserBackground",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"WalletAddress\": \"0xqwefegewg\",\r\n    \"EducationBackground\":\"Collegue\",\r\n    \"Interest\":\"Learning new things\",\r\n    \"WorkExperience\":\"5 - 10 years\",\r\n    \"WorkIndustry\": \"Information technology\",\r\n    \"TeachingStyle\": \"Reading/Writing\",\r\n    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5000/userInfo/storeUserBackground"
+			},
+			"response": []
+		},
+		{
+			"name": "queryUserBackgroundByAddress",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"WalletAddress\": \"0xqwefegewg\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5000/userInfo/queryUserBackgroundByAddress"
+			},
+			"response": []
+		},
+		{
+			"name": "genCourseOutline",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"WalletAddress\":\"0xqwefegewg\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5000/aiGen/genCourseOutline"
+			},
+			"response": []
+		},
+		{
+			"name": "Save Course outline",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"WalletAddress\":\"0xqwefegewg\",\r\n    \"courseName\":\"Block chain 1011\",\r\n    \"courseOutline\":{\r\n        \"A\": {\r\n            \"topic\": \" Introduction to Blockchain Technology**\",\r\n            \"details\": [\r\n                {\r\n                    \"A.1\": \" Evolution of Blockchain - From Bitcoin to Ethereum\"\r\n                },\r\n                {\r\n                    \"A.2\": \" Understanding Decentralization and its Importance\"\r\n                },\r\n                {\r\n                    \"A.3\": \" Overview of Blockchain Protocols and Consensus Mechanisms\"\r\n                },\r\n                {\r\n                    \"A.4\": \" Smart Contracts and DApps (Decentralized Applications)\"\r\n                }\r\n            ]\r\n        },\r\n        \"B\": {\r\n            \"topic\": \" Cryptography in Blockchain**\",\r\n            \"details\": [\r\n                {\r\n                    \"B.1\": \" Basics of Cryptography - Hash Functions and Public Key Cryptography\"\r\n                },\r\n                {\r\n                    \"B.2\": \" How Cryptography Secures Data on the Blockchain\"\r\n                },\r\n                {\r\n                    \"B.3\": \" Cryptographic Algorithms Used in Various Blockchains\"\r\n                }\r\n            ]\r\n        },\r\n        \"C\": {\r\n            \"topic\": \" Ethereum and Smart Contracts**\",\r\n            \"details\": [\r\n                {\r\n                    \"C.1\": \" Introduction to Ethereum - The World Computer\"\r\n                },\r\n                {\r\n                    \"C.2\": \" Smart Contract Development with Solidity\"\r\n                },\r\n                {\r\n                    \"C.3\": \" Deploying and Interacting with Smart Contracts\"\r\n                },\r\n                {\r\n                    \"C.4\": \" Understanding Gas and Transaction Fees on Ethereum\"\r\n                }\r\n            ]\r\n        },\r\n        \"D\": {\r\n            \"topic\": \" Decentralized Finance (DeFi)**\",\r\n            \"details\": [\r\n                {\r\n                    \"D.1\": \" Overview of the DeFi Ecosystem\"\r\n                },\r\n                {\r\n                    \"D.3\": \" Risks and Challenges in DeFi\"\r\n                },\r\n                {\r\n                    \"D.4\": \" Future Trends in DeFi\"\r\n                }\r\n            ]\r\n        },\r\n        \"E\": {\r\n            \"topic\": \" Non-Fungible Tokens (NFTs)**\",\r\n            \"details\": [\r\n                {\r\n                    \"E.1\": \" Understanding NFTs and Their Use Cases\"\r\n                },\r\n                {\r\n                    \"E.2\": \" How to Create and Trade NFTs\"\r\n                },\r\n                {\r\n                    \"E.3\": \" Impact of NFTs on Art and Gaming Industries\"\r\n                },\r\n                {\r\n                    \"E.4\": \" Exploring the Legal and Ethical Considerations of NFTs\"\r\n                }\r\n            ]\r\n        },\r\n        \"F\": {\r\n            \"topic\": \" Web3 and the Decentralized Web**\",\r\n            \"details\": [\r\n                {\r\n                    \"F.1\": \" Introduction to Web3 - The Decentralized Internet\"\r\n                },\r\n                {\r\n                    \"F.2\": \" Tools and Technologies Powering Web3\"\r\n                },\r\n                {\r\n                    \"F.3\": \" Building Decentralized Applications (DApps) on Web3\"\r\n                },\r\n                {\r\n                    \"F.4\": \" The Role of DAOs (Decentralized Autonomous Organizations) in Web3\"\r\n                }\r\n            ]\r\n        },\r\n        \"G\": {\r\n            \"topic\": \" Blockchain Scalability and Interoperability**\",\r\n            \"details\": [\r\n                {\r\n                    \"G.1\": \" Challenges with Scalability and Solutions\"\r\n                },\r\n                {\r\n                    \"G.2\": \" Layer 2 Scaling Solutions and Sidechains\"\r\n                },\r\n                {\r\n                    \"G.3\": \" Interoperability Among Different Blockchains\"\r\n                },\r\n                {\r\n                    \"G.4\": \" The Future of Blockchain Scalability and Interoperability\"\r\n                }\r\n            ]\r\n        },\r\n        \"H\": {\r\n            \"topic\": \" Blockchain Security**\",\r\n            \"details\": [\r\n                {\r\n                    \"H.1\": \" Common Security Threats in Blockchain and How to Mitigate Them\"\r\n                },\r\n                {\r\n                    \"H.2\": \" Smart Contract Vulnerabilities and Security Practices\"\r\n                },\r\n                {\r\n                    \"H.3\": \" The Role of Audits in Blockchain Security\"\r\n                },\r\n                {\r\n                    \"H.4\": \" Case Studies of Major Blockchain Hacks and What We Can Learn From Them\"\r\n                },\r\n                {\r\n                    \"I.1\": \" Emerging Trends in Blockchain and Web3\"\r\n                },\r\n                {\r\n                    \"I.2\": \" Blockchain's Potential Impact on Various Industries\"\r\n                },\r\n                {\r\n                    \"I.3\": \" Ethical and Societal Implications of Blockchain Technology\"\r\n                },\r\n                {\r\n                    \"I.4\": \" Preparing for a Blockchain and Web3 Future\"\r\n                }\r\n            ]\r\n        }\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5000/courseOutline/saveCourseOutline"
+			},
+			"response": []
+		},
+		{
+			"name": "query Course outline",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"WalletAddress\":\"0xqwefegewg\",\r\n    \"courseId\":\"f646c297-3384-41b2-8c58-684d7cbe7c5d\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5000/courseOutline/queryCourseOutline"
+			},
+			"response": []
+		}
+	]
+}

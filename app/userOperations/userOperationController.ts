@@ -1,6 +1,6 @@
 import {UserBackground} from './models/UserBackground'
 import {logger} from '../common'
-import { isNull } from 'util';
+
 
 const saveUserBackground = async (data) => {
 	try {
