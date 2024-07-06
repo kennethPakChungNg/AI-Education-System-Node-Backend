@@ -59,27 +59,5 @@ router.post( '/genCourseOutline' , async(req: express.Request,res: express.Respo
 });
 
 
-/**
- * Step 6: 
- */
-router.post( '/saveCourseOutline' , async(req: express.Request,res: express.Response)=>{   
-    try{
-        const courseOutline = req.body.courseOutline
-        const walletAddress = req.body.walletAddress
-        const courseName = req.body.courseName
-
-        //search courseOutline by courseName , wallet address
-
-        //insert if not exist, update if exist.
-        
-
-    }catch(error){
-        logger.error( error.stack )
-        return jsonResponse(
-            res,
-            { status: httpStatus.INTERNAL_SERVER_ERROR, error: error.message }
-        )
-    }
-});
 
 export default router;

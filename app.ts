@@ -6,6 +6,7 @@ import cors from 'cors';
 import userInfoRouter from './app/userOperations/userOperationRouter'
 import contenGenerateRouter from  './app/ContentGenerate/contentGenerateRouter'
 import courseOutlineRouter from './app/CourseOutline/courseOutlineRouter'
+import conversationRouter from './app/Conversation/conversationRouter'
 import mongoose from "mongoose"
 
 export default class Startup {
@@ -22,14 +23,15 @@ export default class Startup {
 
         const {SERVER_MONGODB_URL} = process.env
         this.app.use(cors());
-        this.app.use(express.json());
-        this.app.use(express.urlencoded({ extended: false }));
+        this.app.use(express.json({ limit: '10mb' }));
+        this.app.use(express.urlencoded({ limit: '10mb',  extended: false }));
         this.app.use(cookieParser());
 
         // register controller routes
         this.app.use('/userInfo', userInfoRouter);
         this.app.use('/courseOutline', courseOutlineRouter);
         this.app.use('/aiGen', contenGenerateRouter);
+        this.app.use("/conversation", conversationRouter)
 
         this.app.use(function(req, res, next) {
             next(createError(404));
