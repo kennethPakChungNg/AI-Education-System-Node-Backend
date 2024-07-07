@@ -2,23 +2,30 @@ import mongoose from 'mongoose';
 import {v1}  from "uuid"; 
 
 
-const collectionName = 'courseOutline';
+const collectionName = 'quiz';
 //a ticket
-const courseOutlineModel = new mongoose.Schema(
+const quizModel = new mongoose.Schema(
     {
         _id: { type: String, default: v1 
         },
-        courseId:{
-            type: String
-        },
+
         WalletAddress:{
             type:String
         },
-        courseName: { 
-            type: String 
+        QuizId :{
+            type: String
         },
-        courseOutline: { 
+        CourseId:{
+            type: String
+        },
+        TopicId: { 
             type: Object 
+        },
+        SubTopicId:{
+            type: String
+        },
+        Quiz:{
+            type:Object
         },
         createDate:{
             type: Date,
@@ -37,6 +44,6 @@ const courseOutlineModel = new mongoose.Schema(
 
 mongoose.connection.collection(collectionName);
 const db_related = mongoose.connection.useDb("aiEducation");
-const CourseOutline = db_related.model( collectionName , courseOutlineModel );
+const Quiz = db_related.model( collectionName , quizModel );
 
-export { CourseOutline }
+export { Quiz }

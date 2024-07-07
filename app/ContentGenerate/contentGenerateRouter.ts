@@ -7,7 +7,8 @@ import httpStatus from 'http-status'
 import { jsonResponse } from '../common/responseUtil';
 import {
     genCourseOutlineByOpenAI,
-    answerUserQuestion
+    answerUserQuestion,
+    generateQuizOpenAi
 } from './contentGenerateController'
 
 import {
@@ -15,9 +16,15 @@ import {
 } from '../userOperations/userOperationController'
 
 import validateSchema from '../common/validateSchema';
-import { answerUserQuestionSchema  } from './contenGenerateApiSchema';
+import { 
+    answerUserQuestionSchema  ,
+    generateQuizSchema
+} from './contenGenerateApiSchema';
 import { queryCourseOutline } from '../CourseOutline/courseOutlineController';
 import { queryEducateConversation } from '../Conversation/conversationController';
+import { saveQuizToDb } from '../Quiz/quizController';
+const { v4: uuidv4 } = require('uuid');
+
 /**
  * TODO
  * 
@@ -26,8 +33,6 @@ import { queryEducateConversation } from '../Conversation/conversationController
  * #3 generate course outline based on user's background
 
 */
-
-
 router.post( '/genCourseOutline' , async(req: express.Request,res: express.Response)=>{   
     try{
         const WalletAddress = req.body.WalletAddress
@@ -71,26 +76,26 @@ router.post( '/genCourseOutline' , async(req: express.Request,res: express.Respo
 router.post('/answerUserQuestion' , answerUserQuestionSchema ,validateSchema(), async(req: express.Request,res: express.Response)=>{   
     try{
         const WalletAddress = req.body.WalletAddress
+
         //find user profile
         const userBackground = await queryUserBackground( {
             WalletAddress: WalletAddress
         });
 
-        const CourseId = req.body.CourseId
         //find the course outline from wallet addr + courseId
+        const CourseId = req.body.CourseId
         const courseOutline = await queryCourseOutline({
             WalletAddress: WalletAddress,
             courseId: CourseId
         });
 
-        const message = req.body.Message
-        const topicId = req.body.TopicId
         /* 
         retrieve prompt based on what user passed in.
         if subtopic id is null, the user is triggered by start to learn first time, set subtopic id = 1.1
         otherwise , the user is asking question about a sub topic.
-        retrieve the chat record from database
         */
+        const message = req.body.Message
+        const topicId = req.body.TopicId
         let SubTopicId = req.body.SubTopicId;
         const detailsOfTopic = Object.assign({} , ...(courseOutline[0].courseOutline[topicId].details) );
         if ( SubTopicId == undefined ){
@@ -98,6 +103,7 @@ router.post('/answerUserQuestion' , answerUserQuestionSchema ,validateSchema(), 
         }
         let subtopicName = detailsOfTopic[SubTopicId]
 
+        //retrieve the chat record from database
         const chatRecord = await queryEducateConversation({
             WalletAddress: WalletAddress,
             CourseId: CourseId,
@@ -107,6 +113,7 @@ router.post('/answerUserQuestion' , answerUserQuestionSchema ,validateSchema(), 
 
 
         //ask openai using the prompt and retrieve result.
+        //no content formatting needed
         const answerFromOpenAi = await answerUserQuestion(
             userBackground[0],
             courseOutline[0],
@@ -116,10 +123,82 @@ router.post('/answerUserQuestion' , answerUserQuestionSchema ,validateSchema(), 
             message
         )
 
-        //formatting the content and return result
+        //return result
         return jsonResponse(
 			res,
 			{ status: httpStatus.OK, data: answerFromOpenAi }
+		)
+    }catch(error){
+        logger.error( error.stack )
+        return jsonResponse(
+            res,
+            { status: httpStatus.INTERNAL_SERVER_ERROR, error: error.message }
+        )
+    }
+});
+
+/**
+ * Generate quiz
+ */
+router.post('/generateQuiz' , generateQuizSchema ,validateSchema(), async(req: express.Request,res: express.Response)=>{   
+    try{
+        const WalletAddress = req.body.WalletAddress;
+        const CourseId = req.body.CourseId;
+        const topicId = req.body.TopicId;
+        const SubTopicId = req.body.SubTopicId;
+
+        //find course name
+        let courseOutlineDb = await queryCourseOutline({
+            WalletAddress: WalletAddress,
+            courseId: CourseId
+        });
+
+        if ( courseOutlineDb == undefined || courseOutlineDb.size == 0 ){
+            throw new Error(`Cannot find corresponding course of wallet address  ${WalletAddress}, CourseId: ${CourseId}`);
+        }
+
+        courseOutlineDb  = courseOutlineDb[0];
+        const courseName = courseOutlineDb.courseName ; 
+        const topicDtl = courseOutlineDb.courseOutline[topicId]
+        const topicName = topicDtl.topic;
+        const detailsOfTopic = Object.assign({} , ...(topicDtl.details) );
+        const SubTopicName = detailsOfTopic[SubTopicId]; 
+
+        //retrieve the chat record from database
+        const chatRecord = await queryEducateConversation({
+            WalletAddress: WalletAddress,
+            CourseId: CourseId,
+            TopicId: topicId,
+            SubTopicId: SubTopicId
+        }, 'Role Message ConversationTimestamp' )
+        
+        const generatedQuiz = await generateQuizOpenAi(
+            chatRecord,
+            courseName,
+            topicName,
+            SubTopicName,
+        )
+
+        //save to db
+        const quizId = uuidv4();
+        await saveQuizToDb({
+            WalletAddress: WalletAddress,
+            CourseId: CourseId,
+            TopicId: topicId,
+            SubTopicId: SubTopicId,
+            Quiz : generatedQuiz,
+            QuizId : quizId
+        }
+        );
+
+        return jsonResponse(
+			res,
+			{ status: httpStatus.OK, 
+                data: {
+                    QuizId :quizId,
+                    Quiz: generatedQuiz
+                } 
+            }
 		)
     }catch(error){
         logger.error( error.stack )

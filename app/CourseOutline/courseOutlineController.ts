@@ -2,9 +2,17 @@
 import {CourseOutline} from './models/CourserOutline'
 import {logger} from '../common'
 
-const queryCourseOutline = async (filter={}) => {
+const queryCourseOutline = async (filter={}, selectedField = '') => {
 	try {
-		const returnFromDb = await CourseOutline.find(filter);
+        let returnFromDb = null;
+        if ( selectedField == '' ){
+            returnFromDb = await CourseOutline.find(filter);
+        }else{
+            returnFromDb = await CourseOutline
+                .find(filter)
+                .select(selectedField);
+        }
+		
         return returnFromDb;
 	}catch (error) {
 		throw new error(`Error from queryCourseOutline: ${error.stack}`)

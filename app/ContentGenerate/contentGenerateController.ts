@@ -253,9 +253,117 @@ const answerUserQuestion = async (
   }
 }
 
+const getPromptOfQuizGeneration = (
+  chatRecordMongo,
+  courseName,
+  topicName,
+  SubTopicName
+)=>{
+  const chatRecord = resolveChatRecord(chatRecordMongo);
+  const prompt = `
+    You are a blockchain and Web3 expert and you needs generate a multiple choise quiz. The answer should customized for the user based on the chat Record which are the questions asked from user and the answer you responsed before .
+    ***************************************
+
+    Limitation of the quiz :
+    1. All questions are multiple choice
+    2. The question should be customized for this user based on the chat record I mentioned.
+    3. All question should only ask about course ${courseName} , limted to ${topicName}: ${SubTopicName}
+    4. Needs ten questions only
+    5. Each question should have only 4 choices
+    6. Only one choise is the correct answer
+    7. Format of the return:
+    7a. array list of object.
+    7b. each object shoudl includes these keys : 
+      7.b.1. question
+      7.b.2. choices 
+      7.b.3. answer that is the alphabet of the correct choice
+    8. Example of one of the object:
+      { 
+        question: "What is the consensus mechanism of Bitcoin?"
+        choices: [
+          'A': 'Proof of Work(PoW)',
+          'B': 'Proof of Stack(PoS)',
+          'C': 'Proof of storage',
+          'D': ' Delegated Proof-of-Stake (DPoS)'
+        ],
+        answer: 'A'
+      } 
+
+    ************************************************
+    Please ensure the response format is 100% fully stake with my instruction for you in above.
+
+  `;
+
+  return prompt;
+}
+
+const resolveQuiz = (openAiQuizStr)=>{
+  const jsonStartIndex = openAiQuizStr.indexOf('[');
+  const jsonEndIndex = openAiQuizStr.lastIndexOf(']') + 1;
+  const trimmedJsonString = openAiQuizStr.substring(jsonStartIndex, jsonEndIndex);
+  // Parse the string as JSON
+  const jsonObject = JSON.parse(trimmedJsonString);
+
+  return jsonObject;
+}
+
+const generateQuizOpenAi = async(
+  chatRecordMongo,
+  courseName,
+  topicName,
+  SubTopicName
+)=>{
+  const prompt = getPromptOfQuizGeneration(
+    chatRecordMongo,
+    courseName,
+    topicName,
+    SubTopicName
+  );
+  logger.info("Start openAi quiz  generation.")
+  const apiKey = process.env.OPENAI_API_KEY
+  const url = `${OPENAI_API_BASE_URL}/v1/chat/completions`
+
+  logger.info("Generating prompt.");
+
+  let messages = [];
+
+  chatRecordMongo.forEach(element => {
+    const obj = { "role": element.Role ,  "content": element.Message }
+    messages.push(obj);
+  });
+
+  messages.push({"role": "user", "content": prompt })
+
+  const data = {
+      'model': 'gpt-4o',
+      'messages': messages,
+      'max_tokens': 1000,
+      'temperature': 0.5 
+  }
+
+  const headers = {'Authorization': `Bearer ${apiKey}`}
+  
+  logger.info("Request openAi analysis.")
+  const response:AxiosResponse  = await axios.post(url,data, {headers} );
+  if ( response.status == 200 ){
+      logger.info( "Successfully return result from OpenAI." )
+
+      const requiredContent = response.data['choices'][0]['message']['content']
+
+      return resolveQuiz(requiredContent);
+      
+  }else{
+      logger.error( `Error when OpenAI call to ${url}: ${response.data }`)
+      throw new Error( `Error during API call: ${response.status}`  )
+  }
+  
+  return ''
+} ;
+
+
 export {
     genCourseOutlineByOpenAI,
     resolveCourseOutlineFromOpenAI,
-    answerUserQuestion
-  
+    answerUserQuestion,
+    generateQuizOpenAi
 }
