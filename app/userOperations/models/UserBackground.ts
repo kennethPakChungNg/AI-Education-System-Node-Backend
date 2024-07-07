@@ -11,14 +11,14 @@ const userBackgroundModel = new mongoose.Schema(
         WalletAddress:{
             type:String
         },
-        name: { type: String },
-        educationLevel: { 
+        Name: { type: String },
+        EducationLevel: { 
             type: String 
         },
-        educationBackground: { 
+        EducationBackground: { 
             type: String 
         },
-        subject: { 
+        Subject: { 
             type: String 
         }, // For university/college major
         WorkIndustry: { 

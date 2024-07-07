@@ -24,7 +24,7 @@ const saveConversationSchema = [
         .notEmpty().withMessage("Must inculde role of the message")
         .custom((value: string) => {
             return Object.values(ConversationRole).includes(value);
-        }).withMessage('Invalid role value'),
+        }).withMessage(`Invalid role value, must be ${Object.values(ConversationRole)}`),
     body('Message').isString().notEmpty().withMessage("Must include message"),
     body("CourseId").isString().notEmpty().withMessage("Must include courseId"),
     body("TopicId").isString().notEmpty().withMessage("Must include topicId"),

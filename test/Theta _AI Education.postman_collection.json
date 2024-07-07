@@ -131,6 +131,24 @@
 				"url": "http://localhost:5000/conversation/queryEduConversation"
 			},
 			"response": []
+		},
+		{
+			"name": "answer user question",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"WalletAddress\":\"0xqwefegewg\",\r\n    \"CourseId\":\"f646c297-3384-41b2-8c58-684d7cbe7c5d\",\r\n    \"TopicId\":\"A\",\r\n    \"Message\":\"Let's start the course\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5000/aiGen/answerUserQuestion"
+			},
+			"response": []
 		}
 	]
 }
