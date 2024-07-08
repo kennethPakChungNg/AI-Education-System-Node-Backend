@@ -9,7 +9,12 @@ import { jsonResponse } from '../common/responseUtil';
 import {
     saveCourseOutline,
     queryCourseOutline
-} from './courseOutlineController'
+} from './courseOutlineController';
+
+import { 
+    SuggestedCourseOutline 
+} from './models/suggestedCourseOutline';
+
 const { v4: uuidv4 } = require('uuid');
 /**
  * Step 6: 
@@ -65,6 +70,22 @@ router.post('/queryCourseOutline' , async(req: express.Request,res: express.Resp
             res,
             { status: httpStatus.INTERNAL_SERVER_ERROR, error: error.message }
         )
+    }
+});
+
+router.get('/suggestedCourseOutlines', async (req: express.Request, res: express.Response) => {
+    try {
+      const suggestedCourseOutlines = await SuggestedCourseOutline.find({}, { _id: 0, __v: 0 });
+      return jsonResponse(
+        res,
+        { status: httpStatus.OK, data: suggestedCourseOutlines }
+      );
+    } catch (error) {
+      logger.error(error.stack);
+      return jsonResponse(
+        res,
+        { status: httpStatus.INTERNAL_SERVER_ERROR, error: error.message }
+      );
     }
 });
 export default router;
