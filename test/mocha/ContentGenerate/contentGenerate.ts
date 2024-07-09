@@ -17,7 +17,7 @@ const resolveQuiz = (openAiQuizStr)=>{
     const jsonObject = JSON.parse(trimmedJsonString);
 
     // Output the JSON object
-    console.log(jsonObject);
+    //console.log(jsonObject);
 }
 
 describe('Content Generate By AI', () => {
@@ -32,7 +32,7 @@ describe('Content Generate By AI', () => {
             
             const outline = resolveCourseOutlineFromOpenAI(openAiReturn);
 
-            console.log(`COURSE OUTLINE: \n${ JSON.stringify(outline)}`);
+            //console.log(`COURSE OUTLINE: \n${ JSON.stringify(outline)}`);
             done();
         });
 

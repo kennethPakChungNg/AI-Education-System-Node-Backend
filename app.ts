@@ -7,6 +7,7 @@ import userInfoRouter from './app/userOperations/userOperationRouter'
 import contenGenerateRouter from  './app/ContentGenerate/contentGenerateRouter'
 import courseOutlineRouter from './app/CourseOutline/courseOutlineRouter'
 import conversationRouter from './app/Conversation/conversationRouter'
+import quizRouter from './app/Quiz/quizRouter'
 import mongoose from "mongoose"
 
 export default class Startup {
@@ -31,7 +32,8 @@ export default class Startup {
         this.app.use('/userInfo', userInfoRouter);
         this.app.use('/courseOutline', courseOutlineRouter);
         this.app.use('/aiGen', contenGenerateRouter);
-        this.app.use("/conversation", conversationRouter)
+        this.app.use("/conversation", conversationRouter);
+        this.app.use("/quiz", quizRouter);
 
         this.app.use(function(req, res, next) {
             next(createError(404));

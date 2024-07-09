@@ -297,7 +297,7 @@ const getPromptOfQuizGeneration = (
   return prompt;
 }
 
-const resolveQuiz = (openAiQuizStr)=>{
+const resolveJsonFmOpenAi = (openAiQuizStr)=>{
   const jsonStartIndex = openAiQuizStr.indexOf('[');
   const jsonEndIndex = openAiQuizStr.lastIndexOf(']') + 1;
   const trimmedJsonString = openAiQuizStr.substring(jsonStartIndex, jsonEndIndex);
@@ -350,20 +350,102 @@ const generateQuizOpenAi = async(
 
       const requiredContent = response.data['choices'][0]['message']['content']
 
-      return resolveQuiz(requiredContent);
+      return resolveJsonFmOpenAi(requiredContent);
       
   }else{
       logger.error( `Error when OpenAI call to ${url}: ${response.data }`)
       throw new Error( `Error during API call: ${response.status}`  )
   }
   
-  return ''
+
 } ;
+
+
+const prompt_getQuizExplain = (quizAnswerList)=>{
+
+  const prompt = `
+  You are a blockchain and Web3 expert and you review the user submitted quiz list and explain why it is correct if needed.
+
+  ************************************
+  Here's the user submitted quiz list submitted by user:
+  ${ JSON.stringify(quizAnswerList) }
+
+  ************************************
+  Here are serveral things you must consider:
+  1. the user submitted quiz list is an array list of json.
+  2. Each json contains serval data with key
+    2a. question: The question asked
+    2b. choices : multiple choices to choose which is an array list of object with key = choice number, value = string of the option
+    2c: answer: The correct answer
+    2d: userAnswer: What user answered
+    2e. isCorrect: Whether the user correct
+  3. For each question, you should response following things:
+    3a. Why the answer is correct if it is not a pure fact
+    3b. Possibility of misunderstanding if isCorrect = false 
+  4. The explanation at point 3 should under 100 words.
+  5. You should return the reslt as json with objects that:
+    5.1: each object represents 1 question.  
+    5.2: each object contains key = "questionNo" , values = question number
+    5.3: each object contains key = "question" , values = The actual question
+    5.4: each object contains key = "userAnswer" ,  values = what use choosed
+    5.5: each object contains key = "isCorrect" ,  values = Does user correct , either true or false
+    5.6: each object contains key = "explanation" , values = the explanation of the question
+    5.7: example of an object: { questionNo : 1 , question:  "What is the primary purpose of Bitcoin?" , userAnswer:"B", isCorrect: true,  explanation: "The correct answer is C: Digital currency.\n Bitcoin was designed as a decentralized digital currency for secure, peer-to-peer transactions."  } 
+  
+
+  ************************************************
+  Please ensure the response format is 100% fully stake with my instruction for you in above.
+
+  `
+
+  return prompt;
+}
+
+const getQuizExplainFromOpenAI = async( quizAnswerList )=>{
+  //prompt
+  const prompt = prompt_getQuizExplain(quizAnswerList);
+
+  logger.info("Start openAi quiz explanation generation.")
+  const apiKey = process.env.OPENAI_API_KEY
+  const url = `${OPENAI_API_BASE_URL}/v1/chat/completions`
+
+  logger.info("Generating prompt.");
+
+  let messages = [];
+
+  messages.push({"role": "system", "content":"I'm a blockchain and web3 expert."})
+  messages.push({"role": "user", "content": prompt })
+
+  const data = {
+      'model': 'gpt-4o',
+      'messages': messages,
+      'max_tokens': 1000,
+      'temperature': 0.5 
+  }
+
+  const headers = {'Authorization': `Bearer ${apiKey}`}
+  
+  logger.info("Request openAi analysis.")
+  const response:AxiosResponse  = await axios.post(url,data, {headers} );
+  if ( response.status == 200 ){
+      logger.info( "Successfully return result from OpenAI." )
+
+      const requiredContent = response.data['choices'][0]['message']['content']
+
+      return resolveJsonFmOpenAi(requiredContent);
+      
+  }else{
+      logger.error( `Error when OpenAI call to ${url}: ${response.data }`)
+      throw new Error( `Error during API call: ${response.status}`  )
+  }
+  
+}
 
 
 export {
     genCourseOutlineByOpenAI,
     resolveCourseOutlineFromOpenAI,
     answerUserQuestion,
-    generateQuizOpenAi
+    generateQuizOpenAi,
+    getQuizExplainFromOpenAI
 }
