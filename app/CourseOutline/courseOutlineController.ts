@@ -1,5 +1,5 @@
 
-import {CourseOutline} from './models/CourserOutline'
+import {CourseOutline} from './models/CourseOutline'
 import {logger} from '../common'
 
 const queryCourseOutline = async (filter={}, selectedField = '') => {

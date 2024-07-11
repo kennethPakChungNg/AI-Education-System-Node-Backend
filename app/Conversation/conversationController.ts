@@ -1,5 +1,5 @@
 
-import { EducateConversation } from "./model/conversation"
+import { EducateConversation } from "./model/Conversation"
 
 const saveEducateConversation = async(data)=>{
   try{

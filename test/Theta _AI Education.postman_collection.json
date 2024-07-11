@@ -97,6 +97,24 @@
 			"response": []
 		},
 		{
+			"name": "query Course outline with selected values",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"WalletAddress\":\"0xqwefegewg\",\r\n    \"requiredField\":[\"courseName\"]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5000/courseOutline/queryCourseOutline"
+			},
+			"response": []
+		},
+		{
 			"name": "Save conversation",
 			"request": {
 				"method": "POST",
@@ -147,6 +165,42 @@
 					}
 				},
 				"url": "http://localhost:5000/aiGen/answerUserQuestion"
+			},
+			"response": []
+		},
+		{
+			"name": "Generate Quiz",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"WalletAddress\":\"0xqwefegewg\",\r\n    \"CourseId\":\"f646c297-3384-41b2-8c58-684d7cbe7c5d\",\r\n    \"TopicId\":\"A\",\r\n    \"SubTopicId\":\"A.1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5000/aiGen/generateQuiz"
+			},
+			"response": []
+		},
+		{
+			"name": "Explain quiz",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"WalletAddress\":\"0xqwefegewg\",\r\n    \"CourseId\":\"f646c297-3384-41b2-8c58-684d7cbe7c5d\",\r\n    \"TopicId\":\"A\",\r\n    \"SubTopicId\":\"A.1\",\r\n    \"QuizId\":\"ee47321f-d131-4ed4-aace-b61e88d33fcf\",\r\n    \"SubmittedAnswer\":[{\r\n        \"question\": \"Who created Bitcoin?\",\r\n      \"answer\": \"B\"\r\n    },\r\n    {\r\n      \"question\": \"What is the primary purpose of Bitcoin?\",\r\n\r\n      \"answer\": \"C\"\r\n    },\r\n    {\r\n      \"question\": \"When was Ethereum launched?\",\r\n\r\n      \"answer\": \"D\"\r\n    },\r\n    {\r\n      \"question\": \"What is the native cryptocurrency of the Ethereum blockchain?\",\r\n\r\n      \"answer\": \"C\"\r\n    },\r\n    {\r\n      \"question\": \"What are smart contracts?\",\r\n\r\n      \"answer\": \"B\"\r\n    },\r\n    {\r\n      \"question\": \"Who is the co-founder of Ethereum?\",\r\n\r\n      \"answer\": \"A\"\r\n    },\r\n    {\r\n      \"question\": \"What is the fee paid for transactions on the Ethereum network called?\",\r\n\r\n      \"answer\": \"C\"\r\n    },\r\n    {\r\n      \"question\": \"What incentivizes miners on the Ethereum network?\",\r\n\r\n      \"answer\": \"D\"\r\n    },\r\n    {\r\n      \"question\": \"What type of applications can be built on Ethereum?\",\r\n\r\n      \"answer\": \"B\"\r\n    },\r\n    {\r\n      \"question\": \"Which blockchain introduced the concept of smart contracts?\",\r\n\r\n      \"answer\": \"C\"\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5000/quiz/calQuizResult"
 			},
 			"response": []
 		}

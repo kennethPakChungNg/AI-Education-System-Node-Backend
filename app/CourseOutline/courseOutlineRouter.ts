@@ -13,7 +13,7 @@ import {
 
 import { 
     SuggestedCourseOutline 
-} from './models/suggestedCourseOutline';
+} from './models/SuggestedCourseOutline';
 
 const { v4: uuidv4 } = require('uuid');
 /**
@@ -52,13 +52,23 @@ router.post('/queryCourseOutline' , async(req: express.Request,res: express.Resp
         const input = req.body;
         const walletAddr = input.WalletAddress;
         const courseId = input.courseId
+        let requiredField = input.requiredField
 		//save user uid, email, request details to mongodb
-		const filter = {
-            WalletAddress: walletAddr,
-            courseId : courseId
+		let filter = {
+            WalletAddress: walletAddr
 		}
 
-        const returnData = await queryCourseOutline(filter)
+        if (courseId != undefined){
+            filter['courseId'] = courseId
+        }
+
+        if ( requiredField == undefined){
+            requiredField = ''
+        }else{
+            requiredField = requiredField.join(' ');
+        }
+
+        const returnData = await queryCourseOutline(filter,requiredField )
 
 		return jsonResponse(
 			res,
