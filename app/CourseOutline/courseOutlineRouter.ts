@@ -15,6 +15,10 @@ import {
     SuggestedCourseOutline 
 } from './models/SuggestedCourseOutline';
 
+import { updateLearningStatus } from './courseOutlineApiSchema';
+import validateSchema from '../common/validateSchema';
+import { CourseOutline } from './models/CourseOutline';
+
 const { v4: uuidv4 } = require('uuid');
 /**
  * Step 6: 
@@ -83,6 +87,46 @@ router.post('/queryCourseOutline' , async(req: express.Request,res: express.Resp
     }
 });
 
+router.post("/updateLearningStatus", updateLearningStatus, validateSchema(), async(req: express.Request, res: express.Response) => {
+    try {
+            const filter = {
+                WalletAddress: req.body.WalletAddress,
+                courseId:req.body.CourseId,
+            }
+            const TopicId = req.body.TopicId;
+            const SubTopicId = req.body.SubTopicId;
+            const isCompleted = req.body.isCompleted ;
+            const course = await CourseOutline.findOne(filter);
+            if ( course == undefined || course == null){
+                return jsonResponse(
+                    res,
+                    { status: httpStatus.OK, data: {
+                        "message":"course not find!"
+                    } }
+                );
+            }
+            const topicDetails = course.courseOutline[TopicId].details
+            topicDetails.map(subTopic=>{
+                const keyList = Object.keys(subTopic)
+                if( keyList.includes(SubTopicId) ){
+                    subTopic['isCompleted'] =isCompleted;
+                }
+                return subTopic;
+            })
+            const saveResult =  await course.save();
+        return jsonResponse(
+            res,
+            { status: httpStatus.OK, data: saveResult }
+          );
+    } catch (error) {
+        logger.error(error.stack);
+        return jsonResponse(
+        res,
+        { status: httpStatus.INTERNAL_SERVER_ERROR, error: error.message }
+        );
+    }
+})
+
 router.get('/suggestedCourseOutlines', async (req: express.Request, res: express.Response) => {
     try {
       const suggestedCourseOutlines = await SuggestedCourseOutline.find({}, { _id: 0, __v: 0 });
@@ -98,4 +142,6 @@ router.get('/suggestedCourseOutlines', async (req: express.Request, res: express
       );
     }
 });
+
+
 export default router;

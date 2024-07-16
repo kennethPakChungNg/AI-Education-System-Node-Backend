@@ -18,8 +18,15 @@ const queryCourseOutline = [
           })
 ]
 
-
+const updateLearningStatus = [
+  body('WalletAddress').isString().notEmpty().withMessage("Must include WalletAddress"),
+  body("CourseId").isString().notEmpty(),
+  body("TopicId").isString().notEmpty().withMessage("Must include topicId"),
+  body("SubTopicId").isString().notEmpty().withMessage("Must include subTopicId"),
+  body("isCompleted").isBoolean().notEmpty().withMessage("Must include isCompleted"),
+]
 
 export  {
-    queryCourseOutline
+    queryCourseOutline,
+    updateLearningStatus
 }
