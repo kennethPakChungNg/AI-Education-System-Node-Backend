@@ -113,6 +113,8 @@ router.post("/updateLearningStatus", updateLearningStatus, validateSchema(), asy
                 }
                 return subTopic;
             })
+
+            course.markModified('courseOutline');
             const saveResult =  await course.save();
         return jsonResponse(
             res,
