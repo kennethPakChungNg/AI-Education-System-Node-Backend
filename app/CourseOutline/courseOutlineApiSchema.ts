@@ -26,7 +26,14 @@ const updateLearningStatus = [
   body("isCompleted").isBoolean().notEmpty().withMessage("Must include isCompleted"),
 ]
 
+const updateCourseName  = [
+  body('WalletAddress').isString().notEmpty().withMessage("Must include WalletAddress"),
+  body("CourseId").isString().notEmpty(),
+  body("CourseName").isString().notEmpty().withMessage("Must include CourseName")
+]
+
 export  {
     queryCourseOutline,
-    updateLearningStatus
+    updateLearningStatus,
+    updateCourseName 
 }

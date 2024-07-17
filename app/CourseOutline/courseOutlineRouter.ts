@@ -15,7 +15,10 @@ import {
     SuggestedCourseOutline 
 } from './models/SuggestedCourseOutline';
 
-import { updateLearningStatus } from './courseOutlineApiSchema';
+import { 
+    updateLearningStatus ,
+    updateCourseName 
+} from './courseOutlineApiSchema';
 import validateSchema from '../common/validateSchema';
 import { CourseOutline } from './models/CourseOutline';
 
@@ -81,11 +84,40 @@ router.post('/queryCourseOutline' , async(req: express.Request,res: express.Resp
     }catch(error){
         logger.error( error.stack )
         return jsonResponse(
-            res,
+            res, 
             { status: httpStatus.INTERNAL_SERVER_ERROR, error: error.message }
         )
     }
 });
+
+router.post("/updateCourseName", updateCourseName , validateSchema(), async(req: express.Request, res: express.Response) => {
+    try {
+            const filter = {
+                WalletAddress: req.body.WalletAddress,
+                courseId:req.body.CourseId,
+            }
+
+            const course = await CourseOutline.findOne(
+                filter
+            );
+
+            course.courseName = req.body.CourseName ; 
+
+            course.markModified('courseName');
+            const saveResult =  await course.save();
+            return jsonResponse(
+                res,
+                { status: httpStatus.OK, data: saveResult }
+            );
+    } catch (error) {
+        logger.error(error.stack);
+        return jsonResponse(
+        res,
+        { status: httpStatus.INTERNAL_SERVER_ERROR, error: error.message }
+        );
+    }
+})
+
 
 router.post("/updateLearningStatus", updateLearningStatus, validateSchema(), async(req: express.Request, res: express.Response) => {
     try {
@@ -116,10 +148,10 @@ router.post("/updateLearningStatus", updateLearningStatus, validateSchema(), asy
 
             course.markModified('courseOutline');
             const saveResult =  await course.save();
-        return jsonResponse(
-            res,
-            { status: httpStatus.OK, data: saveResult }
-          );
+            return jsonResponse(
+                res,
+                { status: httpStatus.OK, data: saveResult }
+            );
     } catch (error) {
         logger.error(error.stack);
         return jsonResponse(
@@ -144,6 +176,8 @@ router.get('/suggestedCourseOutlines', async (req: express.Request, res: express
       );
     }
 });
+
+
 
 
 export default router;
