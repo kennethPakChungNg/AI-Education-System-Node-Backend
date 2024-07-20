@@ -438,8 +438,37 @@ const getQuizExplainFromOpenAI = async( quizAnswerList )=>{
       logger.error( `Error when OpenAI call to ${url}: ${response.data }`)
       throw new Error( `Error during API call: ${response.status}`  )
   }
-  
 }
+
+
+const getReqbodyImgByStableDiffusion4 = (prompt)=>{
+  return   {
+    "prompt":  prompt ,
+    "negative_prompt": "",
+    "seed": -1,
+    "steps":20
+  }
+}
+
+const genImgByStableDiffusion4 = async( prompt )=>{
+  const url = 'https://stablediffvfejdi9tm0-48826832508b9a68.tec-s1.onthetaedgecloud.com/sdapi/v1/txt2img';
+  const requestBody = getReqbodyImgByStableDiffusion4(prompt);
+  const headers = {
+    'accept': 'application/json',
+    'Content-Type': 'application/json'
+  }
+  const response:AxiosResponse  = await axios.post(url,requestBody, {headers} );
+  if ( response.status == 200 ){
+    logger.info( "Successfully return result from theta cloud : stabe diffusion 4." )
+    return response.data;
+    
+  }else{
+      logger.error( `Error when calling theta cloud : stabe diffusion 4  via  ${url}: ${response.data }`)
+      throw new Error( `Error during API call: ${response.status}`  )
+  }
+
+}
+
 
 
 export {
@@ -447,5 +476,6 @@ export {
     resolveCourseOutlineFromOpenAI,
     answerUserQuestion,
     generateQuizOpenAi,
-    getQuizExplainFromOpenAI
+    getQuizExplainFromOpenAI,
+    genImgByStableDiffusion4
 }

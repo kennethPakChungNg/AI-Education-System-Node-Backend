@@ -45,6 +45,7 @@ const saveCourseOutline = async (data) => {
 	}
 };
 
+
 export {
     queryCourseOutline,
     saveCourseOutline

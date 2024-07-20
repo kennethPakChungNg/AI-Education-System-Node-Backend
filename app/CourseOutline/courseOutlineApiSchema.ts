@@ -32,8 +32,10 @@ const updateCourseName  = [
   body("CourseName").isString().notEmpty().withMessage("Must include CourseName")
 ]
 
+
+
 export  {
     queryCourseOutline,
     updateLearningStatus,
-    updateCourseName 
+    updateCourseName
 }

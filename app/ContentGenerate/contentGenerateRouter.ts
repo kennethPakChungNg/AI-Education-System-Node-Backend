@@ -8,7 +8,8 @@ import { jsonResponse } from '../common/responseUtil';
 import {
     genCourseOutlineByOpenAI,
     answerUserQuestion,
-    generateQuizOpenAi
+    generateQuizOpenAi,
+    genImgByStableDiffusion4
 } from './contentGenerateController'
 
 import {
@@ -18,12 +19,15 @@ import {
 import validateSchema from '../common/validateSchema';
 import { 
     answerUserQuestionSchema  ,
-    generateQuizSchema
+    generateQuizSchema,
+    genEducateImage
 } from './contenGenerateApiSchema';
 import { queryCourseOutline } from '../CourseOutline/courseOutlineController';
 import { queryEducateConversation } from '../Conversation/conversationController';
 import { saveQuizToDb } from '../Quiz/quizController';
 const { v4: uuidv4 } = require('uuid');
+export const importDynamic = new Function('modulePath', 'return import(modulePath)');
+
 
 /**
  * TODO
@@ -209,5 +213,22 @@ router.post('/generateQuiz' , generateQuizSchema ,validateSchema(), async(req: e
     }
 });
 
+router.post('/genEducateImage', genEducateImage ,validateSchema(), async(req: express.Request, res: express.Response) => {
+    try {
+        const prompt = req.body.Message;
+        const imageGen = await genImgByStableDiffusion4(prompt)
+        
+        return jsonResponse(
+          res,
+          { status: httpStatus.OK, data: imageGen }
+        );
+      } catch (error) {
+        logger.error(error.stack);
+        return jsonResponse(
+          res,
+          { status: httpStatus.INTERNAL_SERVER_ERROR, error: error.message }
+        );
+      }
+})
 
 export default router;

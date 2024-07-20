@@ -22,6 +22,8 @@ import {
 import validateSchema from '../common/validateSchema';
 import { CourseOutline } from './models/CourseOutline';
 
+
+
 const { v4: uuidv4 } = require('uuid');
 /**
  * Step 6: 
