@@ -1,5 +1,7 @@
 import axios,{AxiosResponse } from 'axios';
 import {logger} from '../common'
+import { llmModel } from './contenGenerateApiSchema';
+import OpenAI from "openai";
 
 const OPENAI_API_BASE_URL = 'https://api.openai.com'
 
@@ -199,29 +201,14 @@ const getPrompt_anserUserQuestion = (
     3. Don't generate the course line.
     4. Please answer the question in a under 600 words.
 
-
+    ************************************************************
+    Please ensure the response is 100% fully stake with my instruction for you in above.
   `
 
   return prompt;
 }
 
-const answerUserQuestion = async ( 
-  userBackground: any, 
-  courseOutline: any ,
-  chatRecordMongo: any,
-  subtopicName : string,
-  topicId : string,
-  message: string 
-) =>{
-  const prompt = getPrompt_anserUserQuestion(
-    userBackground,
-    courseOutline,
-    chatRecordMongo,
-    subtopicName,
-    topicId,
-    message
-  );
-
+const answerQuestionByOpenAI = async( prompt , message ) => {
   logger.info("Start openAi to answer user question.")
   const apiKey = process.env.OPENAI_API_KEY
   const url = `${OPENAI_API_BASE_URL}/v1/chat/completions`
@@ -251,6 +238,61 @@ const answerUserQuestion = async (
       logger.error( `Error when OpenAI call to ${url}: ${response.data }`)
       throw new Error( `Error during API call: ${response.status}`  )
   }
+}
+
+/**
+ * Call openai(gemma2b) via theta cloud node
+ * @param prompt 
+ * @returns 
+ */
+const answerQuestionByGemma2B  = async( prompt, message)=>{
+  const openai_api_key = process.env.OPENAI_API_KEY
+  const openai_api_base = "https://gemma2b5pma21k6t3-627da26020e70205.tec-s1.onthetaedgecloud.com/v1"
+  
+  const openai = new OpenAI({
+    apiKey:openai_api_key,
+    baseURL:openai_api_base,
+  });
+
+  logger.info("Generating answers by theta cloud gemma2b.")
+  const completion = await openai.chat.completions.create({
+      model: "google/gemma-2b",
+      messages: [
+        {"role": "system", "content": prompt },
+        {"role": "user", "content":  message }
+      ],
+      max_tokens: 1000,
+      temperature: 0.5 
+  });
+  
+  logger.info("Request gemma2b analysis.")
+  return completion['choices'][0]['message']['content']
+}
+
+const answerUserQuestion = async ( 
+  userBackground: any, 
+  courseOutline: any ,
+  chatRecordMongo: any,
+  subtopicName : string,
+  topicId : string,
+  message: string ,
+  llmModelRequested: string
+) =>{
+  const prompt = getPrompt_anserUserQuestion(
+    userBackground,
+    courseOutline,
+    chatRecordMongo,
+    subtopicName,
+    topicId,
+    message
+  );
+  if ( llmModelRequested == llmModel.openAI ){
+    return await answerQuestionByOpenAI(prompt, message);
+  }else if ( llmModelRequested == llmModel.gemma2b ) {
+    return await answerQuestionByGemma2B(prompt, message);
+  }
+
+
 }
 
 const getPromptOfQuizGeneration = (

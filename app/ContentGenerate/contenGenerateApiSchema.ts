@@ -8,12 +8,20 @@ const isTimestemp = (value)=>{
   }
   
 
+const llmModel = {
+  openAI:'openAI',
+  gemma2b:'gemma2b'
+}
+
 const answerUserQuestionSchema = [
     body('WalletAddress').isString().notEmpty().withMessage("Must include WalletAddress"),
     body("CourseId").isString().notEmpty().withMessage("Must include courseId"),
     body("TopicId").isString().notEmpty().withMessage("Must include topicId"),
     body("SubTopicId").isString().optional().withMessage("Must include topicId"),
     body('Message').isString().notEmpty().withMessage("Must include message"),
+    body("model").isString().optional().custom((value: string) => {
+      return Object.values(llmModel).includes(value);
+  }).withMessage(`Invalid role value, must be ${Object.values(llmModel)}`)
 ]
 
 const generateQuizSchema = [
@@ -32,10 +40,9 @@ const genEducateImage = [
     body("SubTopicId").isString().notEmpty().withMessage("Must include subTopicId")
 ]
 
-
-
 export  {
     answerUserQuestionSchema,
     generateQuizSchema ,
-    genEducateImage
+    genEducateImage,
+    llmModel
 }

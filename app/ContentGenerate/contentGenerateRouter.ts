@@ -28,6 +28,7 @@ import { saveQuizToDb } from '../Quiz/quizController';
 const { v4: uuidv4 } = require('uuid');
 export const importDynamic = new Function('modulePath', 'return import(modulePath)');
 
+import { llmModel } from './contenGenerateApiSchema';
 
 /**
  * TODO
@@ -118,13 +119,19 @@ router.post('/answerUserQuestion' , answerUserQuestionSchema ,validateSchema(), 
 
         //ask openai using the prompt and retrieve result.
         //no content formatting needed
+        let model = req.body.model
+        if ( model == undefined ){
+            model = llmModel.openAI
+        }
+
         const answerFromOpenAi = await answerUserQuestion(
             userBackground[0],
             courseOutline[0],
             chatRecord,
             subtopicName,
             topicId,
-            message
+            message,
+            model
         )
 
         //return result
