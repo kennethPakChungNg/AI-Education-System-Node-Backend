@@ -43,7 +43,8 @@ const genEducateImage = [
 const genCourseOutline = [
   body('WalletAddress').isString().notEmpty().withMessage("Must include walletAddress."),
   body('TopicName').isString().notEmpty().withMessage("Must include topic name."),
-  body('LastGeneratedCourseOutline').isObject().optional()
+  body('LastGeneratedCourseOutline').isObject().optional(),
+  body("UserComment").isString().optional()
 ]
 
 export  {

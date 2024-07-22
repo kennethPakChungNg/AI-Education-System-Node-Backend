@@ -44,6 +44,7 @@ router.post( '/genCourseOutline' ,  genCourseOutline,validateSchema() ,async(req
         const WalletAddress = req.body.WalletAddress
         const TopicName = req.body.TopicName
         const LastGeneratedCourseOutline = req.body.LastGeneratedCourseOutline
+        const UserComment = req.body.UserComment
         if ( WalletAddress == undefined ){
             //return error
             const errorMsg = "Must provide walletAddress."
@@ -62,7 +63,7 @@ router.post( '/genCourseOutline' ,  genCourseOutline,validateSchema() ,async(req
         }
 
         // call chatgpt 
-        const courseOutline = await genCourseOutlineByOpenAI(userBackground[0], TopicName, LastGeneratedCourseOutline );
+        const courseOutline = await genCourseOutlineByOpenAI(userBackground[0], TopicName, LastGeneratedCourseOutline, UserComment );
 		return jsonResponse(
 			res,
 			{ status: httpStatus.OK, data: courseOutline }

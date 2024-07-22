@@ -6,7 +6,7 @@ import OpenAI from "openai";
 const OPENAI_API_BASE_URL = 'https://api.openai.com'
 
 
-const genCourseOutlineByOpenAI = async( userBackground: any, TopicName : string, LastGeneratedCourseOutline:any)=>{
+const genCourseOutlineByOpenAI = async( userBackground: any, TopicName : string, LastGeneratedCourseOutline:any, UserComment: string)=>{
     logger.info("Start openAi course outline generation.")
     const apiKey = process.env.OPENAI_API_KEY
     const url = `${OPENAI_API_BASE_URL}/v1/chat/completions`
@@ -15,7 +15,7 @@ const genCourseOutlineByOpenAI = async( userBackground: any, TopicName : string,
     const data = {
         'model': 'gpt-4o',
         'messages': [
-            {"role": "system", "content": getPrompt_courseOutline(userBackground, TopicName, LastGeneratedCourseOutline)},
+            {"role": "system", "content": getPrompt_courseOutline(userBackground, TopicName, LastGeneratedCourseOutline, UserComment)},
             {"role": "user", "content": "Want a course outline of blockchain/ Web3 knowledge. "}
         ],
         'max_tokens': 1000,
@@ -140,7 +140,7 @@ const resolveChatRecord = ( chatRecordObj: any) =>{
   return prompt;
 }
 
-const getPrompt_courseOutline = ( userBackground: any , TopicName: string, LastGeneratedCourseOutline: any) =>{
+const getPrompt_courseOutline = ( userBackground: any , TopicName: string, LastGeneratedCourseOutline: any, UserComment: string ) =>{
     const resolvedUserBackground = resolveUserBackGround(userBackground);
     let prompt = `
         You are a blockchain and Web3 expert and you needs to provide a customized course outline of blockchain and Web3 knowledge based on user background and must talk about ${TopicName}. In general, if the user has a more technical background, you teach the user in deeper way.
@@ -161,10 +161,13 @@ const getPrompt_courseOutline = ( userBackground: any , TopicName: string, LastG
           C: Regulatory and Ethical Considerations
     `;
     if ( LastGeneratedCourseOutline != undefined ){
+      UserComment = UserComment== undefined ? "N/A" : UserComment
+
       logger.info("Add LastGeneratedCourseOutline to the prompt for course outline generation.")
       LastGeneratedCourseOutline = JSON.stringify(LastGeneratedCourseOutline);
+
       prompt += `
-      6. Note that user was requested course outline last time and the user doesn't feel it's suitable for him/her. Please don't generate the same course line as below:
+      6. Note that user was requested course outline last time and the user doesn't feel it's suitable for him/her with comment : ${UserComment}. Please don't generate the same course line as below:
 
       ${LastGeneratedCourseOutline}
       *********************************************
