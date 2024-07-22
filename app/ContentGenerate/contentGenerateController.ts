@@ -6,7 +6,7 @@ import OpenAI from "openai";
 const OPENAI_API_BASE_URL = 'https://api.openai.com'
 
 
-const genCourseOutlineByOpenAI = async( userBackground: any)=>{
+const genCourseOutlineByOpenAI = async( userBackground: any, TopicName : string, LastGeneratedCourseOutline:any)=>{
     logger.info("Start openAi course outline generation.")
     const apiKey = process.env.OPENAI_API_KEY
     const url = `${OPENAI_API_BASE_URL}/v1/chat/completions`
@@ -15,7 +15,7 @@ const genCourseOutlineByOpenAI = async( userBackground: any)=>{
     const data = {
         'model': 'gpt-4o',
         'messages': [
-            {"role": "system", "content": getPrompt_courseOutline(userBackground)},
+            {"role": "system", "content": getPrompt_courseOutline(userBackground, TopicName, LastGeneratedCourseOutline)},
             {"role": "user", "content": "Want a course outline of blockchain/ Web3 knowledge. "}
         ],
         'max_tokens': 1000,
@@ -140,20 +140,36 @@ const resolveChatRecord = ( chatRecordObj: any) =>{
   return prompt;
 }
 
-const getPrompt_courseOutline = ( userBackground: any ) =>{
+const getPrompt_courseOutline = ( userBackground: any , TopicName: string, LastGeneratedCourseOutline: any) =>{
     const resolvedUserBackground = resolveUserBackGround(userBackground);
-    const prompt = `
-        You are a blockchain and Web3 expert and you needs to provide a customized course outline of blockchain and Web3 knowledge based on user background. In general, if the user has a more technical background, you teach the user in deeper way.
+    let prompt = `
+        You are a blockchain and Web3 expert and you needs to provide a customized course outline of blockchain and Web3 knowledge based on user background and must talk about ${TopicName}. In general, if the user has a more technical background, you teach the user in deeper way.
 
         ${resolvedUserBackground}
 
         *******************************************************
-        Please provide a structured result in point form. The strucutre must be divied in two levels. 
+        1. Please provide a structured result in point form. The strucutre must be divied in two levels. 
         Level 1 is the blockchain/ web3 topic with starting label maintopic.[A~Z] 
-        Level 2 is the detail of each topic with starting label with format subtopic.[lable of the topic].[integer with acending order]. 
+        Level 2 is the detail of each topic about with starting label with format subtopic.[lable of the topic].[integer with acending order]. 
 
-        Please ensure the response format is 100% fully stake with my instruction for you in above.
+        2. Please ensure the content of the course outline must talk about : ${TopicName}.
+        3. Please ensure the response format is 100% fully stake with my instruction for you in above.
+        4. For Example, if the course outline must talk about liquidity pool, you should not generate topic / sub-topic about introduction of blockchain.
+        5. If user is not required to learn blockchain 101, you must not generate topic shown below:
+          A: Introduction to Blockchain and Web3
+          B: Future of Blockchain and Web3
+          C: Regulatory and Ethical Considerations
     `;
+    if ( LastGeneratedCourseOutline != undefined ){
+      logger.info("Add LastGeneratedCourseOutline to the prompt for course outline generation.")
+      LastGeneratedCourseOutline = JSON.stringify(LastGeneratedCourseOutline);
+      prompt += `
+      6. Note that user was requested course outline last time and the user doesn't feel it's suitable for him/her. Please don't generate the same course line as below:
+
+      ${LastGeneratedCourseOutline}
+      *********************************************
+      `
+    }
 
     return prompt;
 } 

@@ -9,7 +9,7 @@ import {
     genCourseOutlineByOpenAI,
     answerUserQuestion,
     generateQuizOpenAi,
-    genImgByStableDiffusion4
+    genImgByStableDiffusion4,
 } from './contentGenerateController'
 
 import {
@@ -20,7 +20,8 @@ import validateSchema from '../common/validateSchema';
 import { 
     answerUserQuestionSchema  ,
     generateQuizSchema,
-    genEducateImage
+    genEducateImage,
+    genCourseOutline
 } from './contenGenerateApiSchema';
 import { queryCourseOutline } from '../CourseOutline/courseOutlineController';
 import { queryEducateConversation } from '../Conversation/conversationController';
@@ -38,9 +39,11 @@ import { llmModel } from './contenGenerateApiSchema';
  * #3 generate course outline based on user's background
 
 */
-router.post( '/genCourseOutline' , async(req: express.Request,res: express.Response)=>{   
+router.post( '/genCourseOutline' ,  genCourseOutline,validateSchema() ,async(req: express.Request,res: express.Response)=>{   
     try{
         const WalletAddress = req.body.WalletAddress
+        const TopicName = req.body.TopicName
+        const LastGeneratedCourseOutline = req.body.LastGeneratedCourseOutline
         if ( WalletAddress == undefined ){
             //return error
             const errorMsg = "Must provide walletAddress."
@@ -59,7 +62,7 @@ router.post( '/genCourseOutline' , async(req: express.Request,res: express.Respo
         }
 
         // call chatgpt 
-        const courseOutline = await genCourseOutlineByOpenAI(userBackground[0] );
+        const courseOutline = await genCourseOutlineByOpenAI(userBackground[0], TopicName, LastGeneratedCourseOutline );
 		return jsonResponse(
 			res,
 			{ status: httpStatus.OK, data: courseOutline }

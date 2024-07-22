@@ -40,9 +40,16 @@ const genEducateImage = [
     body("SubTopicId").isString().notEmpty().withMessage("Must include subTopicId")
 ]
 
+const genCourseOutline = [
+  body('WalletAddress').isString().notEmpty().withMessage("Must include walletAddress."),
+  body('TopicName').isString().notEmpty().withMessage("Must include topic name."),
+  body('LastGeneratedCourseOutline').isObject().optional()
+]
+
 export  {
     answerUserQuestionSchema,
     generateQuizSchema ,
     genEducateImage,
-    llmModel
+    llmModel,
+    genCourseOutline
 }
