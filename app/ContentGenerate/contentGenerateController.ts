@@ -266,26 +266,53 @@ const answerQuestionByOpenAI = async( prompt , message ) => {
  */
 const answerQuestionByGemma2B  = async( prompt, message)=>{
   const openai_api_key = process.env.OPENAI_API_KEY
-  const openai_api_base = "https://gemma2b5pma21k6t3-627da26020e70205.tec-s1.onthetaedgecloud.com/v1"
+  //const openai_api_base = "https://gemma2b5pma21k6t3-627da26020e70205.tec-s1.onthetaedgecloud.com/v1"
+  const openai_api_base = "https://gemma2b5pma21k6t3-627da26020e70205.tec-s1.onthetaedgecloud.com/v1/chat/completions"
   
   const openai = new OpenAI({
     apiKey:openai_api_key,
     baseURL:openai_api_base,
   });
-
   logger.info("Generating answers by theta cloud gemma2b.")
+  const data = {
+    model: "google/gemma-2b",
+    messages: [
+      {"role": "system", "content": "I am a blockchain and Web3 expert" },
+      {"role": "user", "content":  prompt }
+    ],
+    'max_tokens': 1000,
+    'temperature': 0.5 
+  }
+
+  const headers = {'Authorization': `Bearer ${openai_api_key}`}
+    
+  logger.info("Request theta cloud llm( google/gemma-2b ) analysis.")
+  const response:AxiosResponse  = await axios.post(openai_api_base,data, {headers} );
+  if ( response.status == 200 ){
+      logger.info( "Successfully return result from OpenAI." )
+
+      const requiredContent = response.data['choices'][0]['message']['content']
+      return requiredContent;
+      
+  }else{
+      logger.error( `Error when OpenAI call to ${openai_api_base}: ${response.data }`)
+      throw new Error( `Error during API call: ${response.status}`  )
+  }
+  /*
+
   const completion = await openai.chat.completions.create({
       model: "google/gemma-2b",
       messages: [
-        {"role": "system", "content": prompt },
-        {"role": "user", "content":  message }
+        {"role": "system", "content": "I am a blockchain and Web3 expert" },
+        {"role": "user", "content":  prompt }
       ],
-      max_tokens: 1000,
-      temperature: 0.5 
+      'max_tokens': 1000,
+      'temperature': 0.5 
   });
   
   logger.info("Request gemma2b analysis.")
   return completion['choices'][0]['message']['content']
+  */
 }
 
 const answerUserQuestion = async ( 
