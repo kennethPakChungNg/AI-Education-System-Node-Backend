@@ -539,7 +539,7 @@ const getReqbodyImgByStableDiffusion4 = (prompt)=>{
 }
 
 const genImgByStableDiffusion4 = async( prompt )=>{
-  const url = 'https://stablediffvfejdi9tm0-48826832508b9a68.tec-s1.onthetaedgecloud.com/sdapi/v1/txt2img';
+  const url = 'https://stablediffhnusm1h5q6-0c832531d26e624b.tec-s1.onthetaedgecloud.com/sdapi/v1/txt2img';
   const requestBody = getReqbodyImgByStableDiffusion4(prompt);
   const headers = {
     'accept': 'application/json',
